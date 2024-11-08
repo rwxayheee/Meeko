@@ -150,8 +150,8 @@ keep_indices, delete_indices = get_fragments_by_atom_indices(polymer.monomers[re
                                              atom_idx1, atom_idx2)
                                              
 for atom_idx in delete_indices: 
-    molsetup_mapidx = {v:k for k,v in polymer.monomers[res_id].molsetup_mapidx.items()}
-    polymer.monomers[res_id].molsetup.delete_atom(molsetup_mapidx[atom_idx])
+    molsetup_mapidx_inverse = {v:k for k,v in polymer.monomers[res_id].molsetup_mapidx.items()}
+    polymer.monomers[res_id].molsetup.delete_atom(molsetup_mapidx_inverse[atom_idx])
 
 rec_fn = f"{pdb_token}_rec.pdbqt"
 with open(rec_fn, "w") as f:
