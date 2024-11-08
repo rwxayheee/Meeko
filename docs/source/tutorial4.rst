@@ -8,21 +8,14 @@ Tethered Docking (RNA receptor, in Python)
     
     The presented example is experimental and its functionality or usage may change. It may not be included in the official release. The context is fictional and may not hold any biochemical significance.
 
-This is a tethered (two-point attached covalent) docking example that uses the AutoDock-GPU (v1.5.3-2e658c3) to covalently modify a nucleobase in an RNA receptor. 
-
-Follow the instructions to set up the environment and run this Python example on your own device (Linux, MacOS or WSL). 
-
-Introduction
-============
-
-The covalent docking example is based on the two-point attractor and flexible sidechain method. In this example, a nonstandard nucleobase 5BU (5-bromo uracil) in the starting RNA structure (hammerhead ribozyme) undergoes covalent modification and forms a Schiff base (imine)-linked uracil. 
+This is a tethered (two-point attached covalent) docking example that uses the AutoDock-GPU (v1.5.3-2e658c3) to covalently modify a nucleobase in an RNA receptor. In this example, a nonstandard nucleobase 5BU (5-bromo uracil) in the starting RNA structure (hammerhead ribozyme) undergoes covalent modification and forms a Schiff base (imine)-linked uracil. 
 
 .. image:: images/chemstructures_PBI_URA.png
    :alt: highlighted AMP
    :width: 60%
    :align: center
 
-This tutorial is intended to showcase the Meeko usage in the preparation of receptor and ligand for tethered docking with an RNA receptor in Python. 
+Follow the instructions to set up the environment and run this Python example on your own device (Linux, MacOS or WSL). 
 
 Environment Setup
 =================
