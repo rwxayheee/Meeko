@@ -1,0 +1,29 @@
+parameter_file boron-silicon-atom_par.dat
+npts 76 60 58
+gridfld 3zd5_rec.maps.fld
+spacing 0.375
+receptor_types HD C A N NA OA F P SA S Cl Br I Mg Ca Mn Fe Zn
+ligand_types HD C A N NA OA F P SA S Cl CL Br BR I Si B
+receptor 3zd5_rec.pdbqt
+gridcenter -19.170 -0.608 -5.987
+smooth 0.500
+map 3zd5_rec.HD.map
+map 3zd5_rec.C.map
+map 3zd5_rec.A.map
+map 3zd5_rec.N.map
+map 3zd5_rec.NA.map
+map 3zd5_rec.OA.map
+map 3zd5_rec.F.map
+map 3zd5_rec.P.map
+map 3zd5_rec.SA.map
+map 3zd5_rec.S.map
+map 3zd5_rec.Cl.map
+map 3zd5_rec.CL.map
+map 3zd5_rec.Br.map
+map 3zd5_rec.BR.map
+map 3zd5_rec.I.map
+map 3zd5_rec.Si.map
+map 3zd5_rec.B.map
+elecmap 3zd5_rec.e.map
+dsolvmap 3zd5_rec.d.map
+dielectric -42.000
