@@ -697,7 +697,18 @@ class MoleculeSetup:
         -------
         None
         """
-        blank_atom = Atom(atom_index, is_dummy=True)
+        blank_atom = Atom(
+            index=atom_index,
+            pdbinfo="",
+            charge=0,
+            coord=np.zeros(3),
+            atomic_num=-1,
+            atom_type="DUM",  # or another type for dummy atoms
+            is_ignore=True,   # Set to ignore if desired
+            is_dummy=True,
+            is_pseudo_atom=False
+        )
+        #blank_atom = Atom(atom_index, is_dummy=True)
         self.atoms[atom_index] = blank_atom
         return
 

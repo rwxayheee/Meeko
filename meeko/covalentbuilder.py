@@ -56,7 +56,7 @@ class CovalentBuilder(object):
     """
     def __init__(self, receptor_mol, residue_string):
         self.rec = receptor_mol
-        selection_tuple = self.parse_residue_string(residue_string, force_CA_CB=True)
+        selection_tuple = self.parse_residue_string(residue_string, force_CA_CB=False)
         # selection tuple: (chain, res, num, atname1, atname2)
         # only 'res' and 'atname[1|2]' are required, the rest is optional,
         # e.g: (None, res, None, 'CA', 'CB')
