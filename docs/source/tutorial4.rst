@@ -35,6 +35,8 @@ Environment Setup
 
     pip install prody
 
+There are some very minor differences between the specific branch used and the ``develop`` branch. See `here for a comparison <https://github.com/rwxayheee/Meeko/compare/develop..rna_flex>`_
+
 Python Script
 =============
 
