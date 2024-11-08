@@ -8,7 +8,7 @@ Tethered Docking (RNA receptor, in Python)
     
     The presented example is experimental and its functionality or usage may change. It may not be included in the official release. The context is fictional and may not hold any biochemical significance.
 
-This is a tethered (two-point attached covalent) docking example that uses the AutoDock-GPU executable to reproduce a covalent complex of a small molecule and an RNA receptor.
+This is a tethered (two-point attached covalent) docking example that uses the AutoDock-GPU (v1.5.3-2e658c3) to covalently modify a nucleobase in an RNA receptor. 
 
 Follow the instructions to set up the environment and run this Python example on your own device (Linux, MacOS or WSL). 
 
