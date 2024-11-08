@@ -17,6 +17,11 @@ Introduction
 
 The covalent docking example is based on the two-point attractor and flexible sidechain method. In this example, a nonstandard nucleobase 5BU (5-bromo uracil) in the starting RNA structure (hammerhead ribozyme) undergoes covalent modification and forms a Schiff base (imine)-linked uracil. 
 
+.. image:: images/chemstructures_PBI_URA.png
+   :alt: highlighted AMP
+   :width: 60%
+   :align: center
+
 This tutorial is intended to showcase the Meeko usage in the preparation of receptor and ligand for tethered docking with an RNA receptor in Python. 
 
 Environment Setup
@@ -40,7 +45,7 @@ Environment Setup
 Python Script
 =============
 
-``Meeko/example/tutorial4/rna_flex.py``
+`Meeko/example/tutorial4/rna_flex.py <https://github.com/rwxayheee/Meeko/blob/ce282c4d86a88fabe62199506addd976cb687ff7/example/tutorial4/rna_flex.py>`_
 
 .. code-block:: python
 
@@ -189,15 +194,11 @@ Python Script
         f.write(PDBQTWriterLegacy.write_from_polymer(polymer)[0])
     print(f"File written: {rec_fn}")
 
-Expected Output Files
-=====================
+Output Files: 
 
-.. code-block:: bash
+- `3zd5_rec.pdbqt <https://github.com/rwxayheee/Meeko/blob/ce282c4d86a88fabe62199506addd976cb687ff7/example/tutorial4/3zd5_rec.pdbqt>`_
 
-    ├── 3zd5.pdb.gz
-    ├── 3zd5_rec.pdbqt
-    ├── PBI_URA_1.pdbqt
-    └── rna_flex.py
+- `PBI_URA_1.pdbqt <https://github.com/rwxayheee/Meeko/blob/ce282c4d86a88fabe62199506addd976cb687ff7/example/tutorial4/PBI_URA_1.pdbqt>`_
 
 What's Next?
 ============
@@ -244,3 +245,5 @@ What's Next?
     mk_export.py 3zd5_PBI_URA.dlg -s 3zd5_PBI_URA_adgpu_out.sdf -k 
     # or all poses
     mk_export.py 3zd5_PBI_URA.dlg -s 3zd5_PBI_URA_adgpu_all.sdf -k --all_dlg_poses
+
+`Tutorial Files and Expected outputs <https://github.com/rwxayheee/Meeko/tree/ce282c4d86a88fabe62199506addd976cb687ff7/example/tutorial4>`
