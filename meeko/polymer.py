@@ -2517,11 +2517,14 @@ class ResidueTemplate:
             element = "H" if atom.GetAtomicNum() == 1 else "heavy"
             if atom.GetIdx() not in mapping_inv:
                 if element == "H": 
-                    nei_idx = atom.GetNeighbors()[0].GetIdx()
-                    if nei_idx in mapping_inv: 
-                        result[element]["excess"].append(mapping_inv[nei_idx])
-                    else:
-                        result[element]["excess"].append(-1)
+                    if atom.GetNeighbors(): 
+                        nei_idx = atom.GetNeighbors()[0].GetIdx()
+                        if nei_idx in mapping_inv: 
+                            result[element]["excess"].append(mapping_inv[nei_idx])
+                        else:
+                            result[element]["excess"].append(-1)
+                    else: # lone hydrogen
+                        raise ValueError(f"Lone hydrogen {atom.GetMonomerInfo().GetName()} found from input structure")
                 else:
                     result[element]["excess"] += 1
         return result, mapping
