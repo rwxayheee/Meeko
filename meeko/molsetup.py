@@ -1981,7 +1981,7 @@ class RDKitMoleculeSetup(MoleculeSetup, MoleculeSetupExternalToolkit):
         is_set_list = [False] * self.mol.GetNumAtoms()
         for atom_index, new_position in new_atom_positions.items():
             new_conformer.SetAtomPosition(atom_index, new_position)
-            is_set_List[atom_index] = True
+            is_set_list[atom_index] = True
         new_mol.RemoveAllConformers()
         new_mol.AddConformer(new_conformer, assignId=True)
         for atom_index, is_set in enumerate(is_set_list):

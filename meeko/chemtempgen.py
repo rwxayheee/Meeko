@@ -551,7 +551,7 @@ def export_chem_templates_to_json(cc_list: List[ChemicalComponent], json_fname: 
 
     # format ambiguous resnames to one line
     for basename in data_to_export["ambiguous"]:
-        single_line_resnames = json.dumps(ambiguous_Dict[basename], separators=(', ', ': '))
+        single_line_resnames = json.dumps(ambiguous_dict[basename], separators=(', ', ': '))
         json_str = json_str.replace(json.dumps(data_to_export["ambiguous"][basename], indent = 4), single_line_resnames)
 
     # format link_labels and atom_name to one line
