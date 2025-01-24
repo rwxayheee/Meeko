@@ -462,7 +462,7 @@ class MoleculePreparation:
             Used to set ROOT of torsion tree instead of searching.
         not_terminal_atoms: list
             Makes bonds with terminal atoms rotatable (e.g. C-Alpha carbon in flexres).
-        delete_ring_bonds: list[tuple[int, int]]
+        delete_ring_bonds: List[Tuple[int, int]]
             Bonds deleted for macrocycle flexibility. Each bond is a tuple of two ints (atom 0-indices).
         glue_pseudo_atoms: dict
             Mapping from parent atom indices to coordinates.
@@ -470,7 +470,7 @@ class MoleculePreparation:
 
         Returns
         -------
-        setups: list[RDKitMoleculeSetup]
+        setups: List[RDKitMoleculeSetup]
             Returns a list of generated RDKitMoleculeSetups
         """
 

@@ -1,8 +1,9 @@
+from typing import List, Set, Dict, Tuple
 import pathlib
 import json
 import logging
 import traceback
-from importlib.resources import files
+from pathlib import Path
 from os import linesep as eol
 from sys import exc_info
 from typing import Union
@@ -31,7 +32,7 @@ from .chemtempgen import build_linked_CCs
 
 import numpy as np
 
-data_path = files("meeko") / "data"
+data_path = Path(__file__).parent / "data"
 periodic_table = Chem.GetPeriodicTable()
 
 try:
@@ -289,7 +290,7 @@ def divide_int_gracefully(integer, weights, allow_equal_weights_to_differ=False)
     return result
 
 
-def rectify_charges(q_list, net_charge=None, decimals=3) -> list[float]:
+def rectify_charges(q_list, net_charge=None, decimals=3) -> List[float]:
     """
     Makes charges 3 decimals in length and ensures they sum to an integer
 
@@ -301,7 +302,7 @@ def rectify_charges(q_list, net_charge=None, decimals=3) -> list[float]:
 
     Returns
     -------
-    charges_dec: list[float]
+    charges_dec: List[float]
 
     """
 
@@ -372,7 +373,7 @@ def get_updated_positions(monomer, new_positions: dict):
     return mol.GetConformer().GetPositions()
 
 
-def update_H_positions(mol: Chem.Mol, indices_to_update: list[int]) -> None:
+def update_H_positions(mol: Chem.Mol, indices_to_update: List[int]) -> None:
     """
     Re-calculates the position of some hydrogens already existing in the mol. Does not guarantee that chirality can be
     preserved.
@@ -381,7 +382,7 @@ def update_H_positions(mol: Chem.Mol, indices_to_update: list[int]) -> None:
     ----------
     mol: Chem.Mol
         RDKit Mol object with hydrogens
-    indices_to_update: list[int]
+    indices_to_update: List[int]
         Hydrogen indices to update
 
     Returns
@@ -737,12 +738,12 @@ class Polymer:
 
     def __init__(
         self,
-        raw_input_mols: dict[str, tuple[Chem.Mol, str]],
-        bonds: dict[tuple[str, str], tuple[int, int]],
+        raw_input_mols: Dict[str, Tuple[Chem.Mol, str]],
+        bonds: Dict[Tuple[str, str], Tuple[int, int]],
         residue_chem_templates: ResidueChemTemplates,
         mk_prep=None,
-        set_template: dict[str, str] = None,
-        blunt_ends: list[tuple[str, int]] = None,
+        set_template: Dict[str, str] = None,
+        blunt_ends: List[Tuple[str, int]] = None,
     ):
         """
         Parameters
@@ -1606,7 +1607,7 @@ class Polymer:
     @staticmethod
     def _pdb_to_residue_mols(
         pdb_string,
-        wanted_altloc: Optional[dict[str, str]]=None,
+        wanted_altloc: Optional[Dict[str, str]]=None,
         default_altloc: Optional[str]=None,
     ):
         """
@@ -2403,7 +2404,7 @@ class ResiduePadder:
 
 # Utility Functions
 
-def get_molAtomMapNumbers(mol: Chem.Mol) -> set[int]:
+def get_molAtomMapNumbers(mol: Chem.Mol) -> Set[int]:
     """Return the set of mapping numbers in a molecule."""
     return {atom.GetIntProp("molAtomMapNumber") for atom in mol.GetAtoms() if atom.HasProp("molAtomMapNumber")}
 
@@ -2422,7 +2423,7 @@ def remove_unmapped_atoms_from_mol(mol: Chem.Mol) -> Chem.Mol:
 
     return mol
 
-def apply_atom_mappings(mcs_mol: Chem.Mol, original_mol: Chem.Mol) -> list[Chem.Mol]:
+def apply_atom_mappings(mcs_mol: Chem.Mol, original_mol: Chem.Mol) -> List[Chem.Mol]:
     """
     Apply atom mappings from the original molecule to the MCS molecule by substructure match.
     Be prepared for multiple matches, return a list for further evaluation

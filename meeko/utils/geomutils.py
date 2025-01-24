@@ -3,14 +3,14 @@
 #
 # Raccoon
 #
-
+from typing import List, Set, Dict, Tuple
 import math
 import sys
 
 import numpy as np
 
 
-def get_vector(coor1, coord2):
+def get_vector(coord1, coord2):
     """ calculate normalized vector between atoms"""
     vec = np.array([coord2[0] - coord1[0], coord2[1] - coord1[1], coord2[2] - coord1[2]], 'f')
     return normalize(vec)

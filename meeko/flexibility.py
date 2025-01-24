@@ -3,7 +3,7 @@
 #
 # Meeko flexibility typer
 #
-
+from typing import List, Set, Dict, Tuple
 from copy import deepcopy
 from .utils import pdbutils
 
@@ -13,8 +13,8 @@ from .molsetup import Bond
 def _calc_max_weighted_depth(
     model: dict,
     seed_node: int,
-    bonds_to_break: tuple[tuple],
-    visited: list[int] = None,
+    bonds_to_break: Tuple[tuple],
+    visited: List[int] = None,
     depth: int = 0,
 ) -> int:
     """
@@ -27,9 +27,9 @@ def _calc_max_weighted_depth(
         The flexibility model being moved over.
     seed_node: int
         Starting node index.
-    bonds_to_break: tuple[tuple]
+    bonds_to_break: Tuple[tuple]
         An immutable list of bonds to break.
-    visited: list[int]
+    visited: List[int]
         Nodes that have been visited.
     depth: int
 
@@ -66,7 +66,7 @@ def _calc_max_weighted_depth(
     return max_value
 
 
-def merge_terminal_atoms(flex_model: dict, not_terminal_atoms: list[int] = ()) -> None:
+def merge_terminal_atoms(flex_model: dict, not_terminal_atoms: List[int] = ()) -> None:
     """
     Rotatable bonds that link to a rigid body group that contains one atom are removed because that one atom lies on the
     bond axis and rotating the bond does not result in any movement of the atom. The atom after the removed rotatable
@@ -277,7 +277,7 @@ def get_root_body_index(model: dict, root_atom_index: int = None) -> int:
 
 
 def update_closure_atoms(
-    molsetup, bonds_to_break: list[tuple], glue_pseudo_atoms: dict
+    molsetup, bonds_to_break: List[tuple], glue_pseudo_atoms: dict
 ) -> None:
     """
     Create pseudoatoms required by breaking bonds in the flexibility model
@@ -335,7 +335,7 @@ def update_closure_atoms(
 def walk_rigid_body_graph(
     molsetup,
     bonds_to_break: tuple,
-    unbroken_rings_bonds: list[tuple],
+    unbroken_rings_bonds: List[tuple],
     start: int = None,
     data: dict = None,
 ):
@@ -347,8 +347,8 @@ def walk_rigid_body_graph(
     ----------
     molsetup: RDKitMoleculeSetup
         MoleculeSetup to walk through
-    bonds_to_break: tuple[tuple]
-    unbroken_rings_bonds: list[tuple(int, int]
+    bonds_to_break: Tuple[tuple]
+    unbroken_rings_bonds: List[tuple(int, int]
     start: int
     data: dict
 

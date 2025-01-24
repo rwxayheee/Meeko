@@ -1,3 +1,4 @@
+from typing import List, Set, Dict, Tuple
 from rdkit import Chem
 from rdkit.Chem import rdChemReactions
 from .utils import mini_periodic_table
@@ -207,20 +208,20 @@ def _aux_altloc_mol_build(atom_field_list, requested_altloc, default_altloc):
 
     return pdbmol, idx_to_rdkit, missed_altloc, needed_altloc
 
-def react_and_map(reactants: tuple[Chem.Mol], rxn: rdChemReactions.ChemicalReaction):
+def react_and_map(reactants: Tuple[Chem.Mol], rxn: rdChemReactions.ChemicalReaction):
     """
     Run a reaction and keep track of atom indices from reactants to products.
     
     Parameters
     ----------
-    reactants : tuple[Chem.Mol]
+    reactants : Tuple[Chem.Mol]
         A tuple of RDKit molecule objects representing the reactants.
     rxn : rdChemReactions.ChemicalReaction
         The RDKit reaction object.
         
     Returns
     -------
-    list[tuple[Chem.Mol, dict[str, list[Optional[int]]]]]
+    List[Tuple[Chem.Mol, Dict[str, List[Optional[int]]]]]
         A list of tuples where each tuple contains a product molecule and a dictionary.
         The dictionary has keys 'atom_idx' and 'new_atom_label', which are ordered lists for product atoms:
         - 'atom_idx' holds the corresponding atom indices in reactant. None for newly added atoms. 

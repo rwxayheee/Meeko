@@ -3,7 +3,7 @@
 #
 # Meeko macrocycle builder
 #
-
+from typing import List, Set, Dict, Tuple
 from collections import defaultdict
 from operator import itemgetter
 
@@ -100,13 +100,13 @@ class FlexMacrocycle:
 
         return breakable_rings, bonds_in_rigid_cycles
 
-    def _score_bond(self, bond: tuple[int, int]) -> int:
+    def _score_bond(self, bond: Tuple[int, int]) -> int:
         """
         Calculates a score for the likeliness that a bond will be broken.
 
         Parameters
         ----------
-        bond: tuple[int, int]
+        bond: Tuple[int, int]
             Input bond to score
 
         Returns
@@ -145,7 +145,7 @@ class FlexMacrocycle:
 
         Parameters
         ----------
-        bonds_in_rigid_rings: set[tuple]
+        bonds_in_rigid_rings: Set[tuple]
             A set of bonds in rigid rings.
 
         Returns

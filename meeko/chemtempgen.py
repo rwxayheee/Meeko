@@ -8,6 +8,7 @@ import tempfile
 import re
 import atexit
 import os
+from typing import List, Set, Dict, Tuple
 
 from meeko.utils.rdkitutils import covalent_radius
 
@@ -24,7 +25,7 @@ list_of_AD_elements_as_AtomicNum = list(covalent_radius.keys())
 metal_AtomicNums = {12, 20, 25, 26, 30}  # Mg: 12, Ca: 20, Mn: 25, Fe: 26, Zn: 30
 
 # Utility Functions
-def mol_contains_unexpected_element(mol: Chem.Mol, allowed_elements: list[str] = list_of_AD_elements_as_AtomicNum) -> bool:
+def mol_contains_unexpected_element(mol: Chem.Mol, allowed_elements: List[str] = list_of_AD_elements_as_AtomicNum) -> bool:
     """Check if mol contains unexpected elements"""
     for atom in mol.GetAtoms():
         if atom.GetAtomicNum() not in allowed_elements:
@@ -32,7 +33,7 @@ def mol_contains_unexpected_element(mol: Chem.Mol, allowed_elements: list[str] =
     return False
 
 
-def get_atom_idx_by_names(mol: Chem.Mol, wanted_names: set[str] = set()) -> set[int]:
+def get_atom_idx_by_names(mol: Chem.Mol, wanted_names: Set[str] = set()) -> Set[int]:
     
     if not wanted_names:
         return set()
@@ -45,8 +46,8 @@ def get_atom_idx_by_names(mol: Chem.Mol, wanted_names: set[str] = set()) -> set[
 
 
 def get_atom_idx_by_patterns(mol: Chem.Mol, allowed_smarts: str, 
-                             wanted_smarts_loc: dict[str, set[int]] = None,
-                             allow_multiple: bool=False) -> set[int]:
+                             wanted_smarts_loc: Dict[str, Set[int]] = None,
+                             allow_multiple: bool=False) -> Set[int]:
     
     if wanted_smarts_loc is None:
         return set()
@@ -84,7 +85,7 @@ def get_atom_idx_by_patterns(mol: Chem.Mol, allowed_smarts: str,
 
 # Mol Editing Functions
 def embed(mol: Chem.Mol, allowed_smarts: str, 
-          leaving_names: set[str] = None, leaving_smarts_loc: dict[str, set[int]] = None, 
+          leaving_names: Set[str] = None, leaving_smarts_loc: Dict[str, Set[int]] = None, 
           alsoHs: bool = True) -> Chem.Mol:
     """
     Remove atoms from the molecule based the union of
@@ -120,7 +121,7 @@ def embed(mol: Chem.Mol, allowed_smarts: str,
 
 
 def cap(mol: Chem.Mol, allowed_smarts: str, 
-        capping_names: set[str] = None, capping_smarts_loc: dict[str, set[int]] = None, 
+        capping_names: Set[str] = None, capping_smarts_loc: Dict[str, Set[int]] = None, 
         protonate: bool = False) -> Chem.Mol:
     """Add hydrogens to atoms with implicit hydrogens based on the union of
     (a) capping_names: list of atom IDs (names), and
@@ -170,7 +171,7 @@ def cap(mol: Chem.Mol, allowed_smarts: str,
     return rwmol.GetMol()
 
 
-def deprotonate(mol: Chem.Mol, acidic_proton_loc: dict[str, int] = None) -> Chem.Mol:
+def deprotonate(mol: Chem.Mol, acidic_proton_loc: Dict[str, int] = None) -> Chem.Mol:
     """Remove acidic protons from the molecule based on acidic_proton_loc"""
     # acidic_proton_loc is a mapping 
     # keys: smarts pattern of a fragment
@@ -267,7 +268,7 @@ def recharge(rwmol: Chem.RWMol) -> Chem.RWMol:
 
 
 # Attribute Formatters
-def get_smiles_with_atom_names(mol: Chem.Mol) -> tuple[str, list[str]]:
+def get_smiles_with_atom_names(mol: Chem.Mol) -> Tuple[str, List[str]]:
     """Generate SMILES with atom names in the order of SMILES output."""
     # allHsExplicit may expose the implicit Hs of linker atoms to Smiles; the implicit Hs don't have names
     smiles_exh = Chem.MolToSmiles(mol, allHsExplicit=True)
@@ -331,7 +332,7 @@ class ChemicalComponent_LoggingControler:
 
 class ChemicalComponent:
 
-    def __init__(self, rdkit_mol: Chem.Mol, resname: str, smiles_exh: str, atom_name: list[str]):
+    def __init__(self, rdkit_mol: Chem.Mol, resname: str, smiles_exh: str, atom_name: List[str]):
         self.rdkit_mol = rdkit_mol
         self.resname = resname
         self.parent = resname # default parent to itself
@@ -522,7 +523,7 @@ class ChemicalComponent:
 
 
 # Export/Writer Function
-def export_chem_templates_to_json(cc_list: list[ChemicalComponent], json_fname: str=""):
+def export_chem_templates_to_json(cc_list: List[ChemicalComponent], json_fname: str=""):
     """Export list of chem templates to json"""
 
     basenames = [cc.parent for cc in cc_list]
@@ -550,7 +551,7 @@ def export_chem_templates_to_json(cc_list: list[ChemicalComponent], json_fname: 
 
     # format ambiguous resnames to one line
     for basename in data_to_export["ambiguous"]:
-        single_line_resnames = json.dumps(ambiguous_dict[basename], separators=(', ', ': '))
+        single_line_resnames = json.dumps(ambiguous_Dict[basename], separators=(', ', ': '))
         json_str = json_str.replace(json.dumps(data_to_export["ambiguous"][basename], indent = 4), single_line_resnames)
 
     # format link_labels and atom_name to one line
@@ -603,14 +604,18 @@ def fetch_from_pdb(resname: str, max_retries = 5, backoff_factor = 2) -> str:
 
 # Constants for deprotonate
 acidic_proton_loc_canonical = {
+    **{
         # any carboxylic acid, sulfuric/sulfonic acid/ester, phosphoric/phosphinic acid/ester
         '[H][O]['+atom+'](=O)': 0 for atom in ('CX3', 'SX4', 'SX3', 'PX4', 'PX3')
-    } | {
+    },
+    **{
         # any thio carboxylic/sulfuric acid
         '[H][O]['+atom+'](=S)': 0 for atom in ('CX3', 'SX4')
-    } | {
+    },
+    **{
         '[H][SX2][a]': 0, # thiophenol
     }
+}
 
 # Make free (noncovalent) CC
 def build_noncovalent_CC(basename: str) -> ChemicalComponent: 
@@ -641,11 +646,11 @@ def build_noncovalent_CC(basename: str) -> ChemicalComponent:
     return cc
 
 
-def add_variants(cc_orig: ChemicalComponent, cc_list: list[ChemicalComponent] = [], 
+def add_variants(cc_orig: ChemicalComponent, cc_list: List[ChemicalComponent] = [], 
                  embed_allowed_smarts: str = None, 
                  cap_allowed_smarts: str = None, cap_protonate: bool = False, 
-                 pattern_to_label_mapping_standard = dict[str, str], 
-                 variant_dict = dict[str, tuple]) -> list[ChemicalComponent]: 
+                 pattern_to_label_mapping_standard = Dict[str, str], 
+                 variant_dict = Dict[str, tuple]) -> List[ChemicalComponent]: 
 
         for suffix in variant_dict:
             cc = copy.deepcopy(cc_orig)
@@ -717,8 +722,8 @@ class NA_recipe:
 
 def build_linked_CCs(basename: str, embed_allowed_smarts: str = None, 
                      cap_allowed_smarts: str = None, cap_protonate: bool = False, 
-                     pattern_to_label_mapping_standard = dict[str, str], 
-                     variant_dict = dict[str, tuple]) -> list[ChemicalComponent]: 
+                     pattern_to_label_mapping_standard = Dict[str, str], 
+                     variant_dict = Dict[str, tuple]) -> List[ChemicalComponent]: 
 
     with ChemicalComponent_LoggingControler(): 
         cc_from_cif = ChemicalComponent.from_cif(fetch_from_pdb(basename), basename)
