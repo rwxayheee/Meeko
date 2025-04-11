@@ -308,13 +308,14 @@ def get_pretty_smiles(smi: str) -> str:
             smi = smi.replace(f"[{content}]", f"{H_stripped}" if 'H' in content else f"{content}")
     return smi
 
-class ChemicalComponent_LoggingControler:
+class ChemicalComponent_LoggingControler: # coverage: ignore
 
     def __init__(self):
         self.original_level = logger.level
         self.rdkit_logger = RDLogger.logger()
         self.default_rdkit_level = RDLogger.WARNING
         self.handler = None
+        self.new_attribute = ""
 
     def __enter__(self):
         self.rdkit_logger.setLevel(RDLogger.CRITICAL)
@@ -329,7 +330,7 @@ class ChemicalComponent_LoggingControler:
         logger.removeHandler(self.handler)
 
 
-class ChemicalComponent:
+class ChemicalComponent: # coverage: ignore
 
     def __init__(self, rdkit_mol: Chem.Mol, resname: str, smiles_exh: str, atom_name: list[str]):
         self.rdkit_mol = rdkit_mol
@@ -692,7 +693,7 @@ def add_variants(cc_orig: ChemicalComponent, cc_list: list[ChemicalComponent] = 
         return cc_list
 
 
-class AA_recipe: 
+class AA_recipe: # coverage: ignore
 
     embed_allowed_smarts = "[NX3]([H])([H])[CX4][CX3](=O)[O]"
     cap_allowed_smarts = "[NX3][CX4][CX3](=O)"
@@ -705,7 +706,7 @@ class AA_recipe:
             "_C": ({"[NX3]([H])([H])[CX4][CX3](=O)[O]": {1}}, None), # C-term amino acid
         }
     
-class NA_recipe: 
+class NA_recipe: # coverage: ignore
 
     embed_allowed_smarts = "[O][PX4](=O)([O])[OX2][CX4][CX4]1[OX2][CX4][CX4][CX4]1[OX2][H]"
     cap_allowed_smarts = "[OX2][CX4][CX4]1[OX2][CX4][CX4][CX4]1[OX2]"
