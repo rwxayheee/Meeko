@@ -24,6 +24,8 @@ def convert_to_tuple_keyed_dict(data: Optional[dict[str, Any]], element_type: ty
         return None
     return {string_to_tuple(k, element_type = element_type): v for k, v in data.items()}
 
+def rdkit_mol_to_smarts(smarts_str: str):
+    return Chem.MolToSmarts(smarts_str).replace("&", "")
 
 def rdkit_mol_from_json(json_str: str):
     """

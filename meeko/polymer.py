@@ -20,6 +20,7 @@ from .molsetup import RDKitMoleculeSetup
 from .molsetup import MoleculeSetup
 from .utils.jsonutils import BaseJSONParsable
 from .utils.jsonutils import serialize_optional
+from .utils.jsonutils import rdkit_mol_to_smarts
 from .utils.jsonutils import rdkit_mol_from_json
 from .utils.jsonutils import convert_to_int_keyed_dict
 from .utils.rdkitutils import mini_periodic_table
@@ -486,7 +487,7 @@ def _delete_residues(res_to_delete, raw_input_mols):
     return
 
 
-class PolymerCreationError(RuntimeError):
+class PolymerCreationError(RuntimeError): # coverage: ignore
 
     def __init__(self, error: str, recommendations: str = None): 
         super().__init__(error) # main error message to pass to RuntimeError
@@ -933,7 +934,7 @@ class Polymer(BaseJSONParsable):
 
         if mk_prep is not None:
             self.parameterize(mk_prep)
-
+        
         return
     
     # region JSON-interchange functions
@@ -2323,7 +2324,7 @@ class Monomer(BaseJSONParsable):
         return
 
 
-class NoAtomMapWarning(logging.Filter):
+class NoAtomMapWarning(logging.Filter): # coverage: ignore
     def filter(self, record):
         fields = record.getMessage().split()
         a = " ".join(fields[1:4]) == "product atom-mapping number"
@@ -2490,7 +2491,7 @@ class ResiduePadder(BaseJSONParsable):
 
                 # Evaluate adjacent mol against the fallback adjacent mol SMARTS
                 if self._check_adjacent_mol(adjacent_smartsmol, adjacent_mol, adjacent_required_atom_index):
-                     print(f"Switched from Template adjacent mol ({Chem.MolToSmarts(self.adjacent_smartsmol)}) to Fallback adjacent mol ({Chem.MolToSmarts(adjacent_smartsmol)})")
+                    print(f"Switched from Template adjacent mol ({Chem.MolToSmarts(self.adjacent_smartsmol)}) to Fallback adjacent mol ({Chem.MolToSmarts(adjacent_smartsmol)})")
                 else:
                     raise RuntimeError(f"adjacent_mol doesn't contain the mapped atoms in adjacent_smartsmol.") 
             
@@ -2586,7 +2587,7 @@ class ResiduePadder(BaseJSONParsable):
     def json_encoder(cls, obj: "ResiduePadder") -> Optional[dict[str, Any]]:
         output_dict = {
             "rxn_smarts": rdChemReactions.ReactionToSmarts(obj.rxn),
-            "adjacent_res_smarts": serialize_optional(Chem.MolToSmarts, obj.adjacent_smartsmol),
+            "adjacent_res_smarts": serialize_optional(rdkit_mol_to_smarts, obj.adjacent_smartsmol),
             "auto_blunt": obj.auto_blunt,
         }
         # we are not serializing the adjacent_smartsmol_mapidx as that will
