@@ -192,33 +192,43 @@ def find_inter_mols_bonds(mols_dict):
     return bonds
 
 
-def mapping_by_mcs(mol, ref):
+def mapping_by_mcs(template_mol, raw_mol):
     """
 
     Parameters
     ----------
-    mol
-    ref
+    template_mol
+    raw_mol
 
     Returns
     -------
 
     """
-    mcs_result = rdFMCS.FindMCS([mol, ref], bondCompare=rdFMCS.BondCompare.CompareAny)
+    mcs_result = rdFMCS.FindMCS([template_mol, raw_mol], bondCompare=rdFMCS.BondCompare.CompareAny)
 
     if not mcs_result.smartsString:
         return []
 
     mcs_mol = Chem.MolFromSmarts(mcs_result.smartsString)
-    mol_matches = mol.GetSubstructMatches(mcs_mol)
-    ref_matches = ref.GetSubstructMatches(mcs_mol, uniquify=False)
+    template_matches = template_mol.GetSubstructMatches(mcs_mol)
+    raw_matches = raw_mol.GetSubstructMatches(mcs_mol, uniquify=False)
 
     atom_maps = []
-    for mol_idxs in mol_matches:
-        for ref_idxs in ref_matches:
-            atom_maps.append({i: j for i, j in zip(mol_idxs, ref_idxs)})
+    for template_idxs in template_matches:
+        for raw_idxs in raw_matches:
+            atom_maps.append({i: j for i, j in zip(template_idxs, raw_idxs)})
+    def symmetry_score(mol):
+        """Returns a rough score of symmetry: higher = more symmetric."""
+        ranks = Chem.CanonicalRankAtoms(mol, breakTies=False)
+        rank_counts = Counter(ranks)
+        score = sum(count for count in rank_counts.values() if count > 1)
+        return score
 
-    return atom_maps
+
+    if symmetry_score(raw_mol) > symmetry_score(template_mol): # ref is more symmetric
+        return atom_maps
+    else:
+        return [atom_maps[0]]  # return only the first one
 
 
 def _snap_to_int(value, tolerance=0.12):
