@@ -192,42 +192,40 @@ def find_inter_mols_bonds(mols_dict):
     return bonds
 
 
-def mapping_by_mcs(mol, ref):
+def mapping_by_mcs(template_mol, raw_mol):
     """
 
     Parameters
     ----------
-    mol
-    ref
+    template_mol
+    raw_mol
 
     Returns
     -------
 
     """
-    mcs_result = rdFMCS.FindMCS([mol, ref], bondCompare=rdFMCS.BondCompare.CompareAny)
+    mcs_result = rdFMCS.FindMCS([template_mol, raw_mol], bondCompare=rdFMCS.BondCompare.CompareAny)
 
     if not mcs_result.smartsString:
         return []
 
     mcs_mol = Chem.MolFromSmarts(mcs_result.smartsString)
-    mol_matches = mol.GetSubstructMatches(mcs_mol)
-    ref_matches = ref.GetSubstructMatches(mcs_mol, uniquify=False)
+    template_matches = template_mol.GetSubstructMatches(mcs_mol)
+    raw_matches = raw_mol.GetSubstructMatches(mcs_mol, uniquify=False)
 
     atom_maps = []
-    for mol_idxs in mol_matches:
-        for ref_idxs in ref_matches:
-            if len(mol_idxs) == len(ref_idxs):
-                atom_maps.append({i: j for i, j in zip(mol_idxs, ref_idxs)})
-
+    for template_idxs in template_matches:
+        for raw_idxs in raw_matches:
+            atom_maps.append({i: j for i, j in zip(template_idxs, raw_idxs)})
     def symmetry_score(mol):
         """Returns a rough score of symmetry: higher = more symmetric."""
-        ranks = Chem.CanonicalRankAtoms(mol, breakTies=False)
+        ranks = Chem.CanonicalRankAtoms(Chem.RemoveHs(mol), breakTies=False)
         rank_counts = Counter(ranks)
         score = sum(count for count in rank_counts.values() if count > 1)
         return score
-    
 
-    if symmetry_score(ref)>symmetry_score(mol): # ref is more symmetric
+
+    if symmetry_score(raw_mol) > symmetry_score(template_mol): # ref is more symmetric
         return atom_maps
     else:
         return [atom_maps[0]]  # return only the first one
@@ -1548,9 +1546,15 @@ class Polymer(BaseJSONParsable):
 
                 # match intra-residue graph
                 results, matched_mappings = template.match(raw_mol)
-                if len(matched_mappings) > 1: 
-                    print(f"Warning: multiple matches found for"
-                          f" {candidate_template_keys[index]}")
+
+                # TODO 
+                # We need mappings to cover different indices of link atoms only.
+                # Carboxylates (e.g. ASP, GLU) will have two mappings for the
+                # carboxylate oxygens, but we don't care about this and could filter
+                # these out. We care about residues like serine, in which the
+                # hydroxyl and carbonyl are equivalent in the raw mol because all
+                # bonds are single.
+
                 for match_stats, mapping in zip(results, matched_mappings):
                     mappings.append(mapping)
                     template_index_to_passing_id[counter] = index
@@ -1628,6 +1632,19 @@ class Polymer(BaseJSONParsable):
                     if i not in passed:
                         passed.append(i)
 
+            # Remove redundancy in mappings. This happens because there are multiple
+            # mappings between raw input mol and the template, for example to account
+            # for the symmetry between carboxylate oxygens in ASP and GLU. We need
+            # only one of the mappings
+            passed_unique = []
+            gotten_template_keys = set()
+            for i in passed:
+                template_key = candidate_template_keys[template_index_to_passing_id[i]]
+                if template_key not in gotten_template_keys:
+                    gotten_template_keys.add(template_key)
+                    passed_unique.append(i)
+            passed = passed_unique
+
             if len(passed) == 0:
                 template_key = None
                 template = None
@@ -1653,7 +1670,6 @@ class Polymer(BaseJSONParsable):
                 template_key = candidate_template_keys[template_index_to_passing_id[index]]
                 template = candidate_templates[template_index_to_passing_id[index]]
                 mapping = mappings[index]
-                H_miss = all_stats["H_missing"][index]
             else:
                 min_missing_H = 999999
                 for i, index in enumerate(passed):
