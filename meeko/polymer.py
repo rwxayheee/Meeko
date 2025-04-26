@@ -219,7 +219,7 @@ def mapping_by_mcs(template_mol, raw_mol):
             atom_maps.append({i: j for i, j in zip(template_idxs, raw_idxs)})
     def symmetry_score(mol):
         """Returns a rough score of symmetry: higher = more symmetric."""
-        ranks = Chem.CanonicalRankAtoms(mol, breakTies=False)
+        ranks = Chem.CanonicalRankAtoms(Chem.RemoveHs(mol), breakTies=False)
         rank_counts = Counter(ranks)
         score = sum(count for count in rank_counts.values() if count > 1)
         return score

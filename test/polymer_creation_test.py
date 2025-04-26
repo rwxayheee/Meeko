@@ -31,6 +31,7 @@ has_lys = pkgdir / "test/polymer_data/has-lys.pdb"
 has_lyn = pkgdir / "test/polymer_data/has-lyn.pdb"
 has_lys_resname_lyn = pkgdir / "test/polymer_data/has-lys-resname-lyn.pdb"
 disulfide_adjacent = pkgdir / "test/polymer_data/disulfide_bridge_in_adjacent_residues.pdb"
+ser_unordered = pkgdir / "test/polymer_data/ser-unordered.pdb"
 
 
 # TODO: add checks for untested polymer fields (e.g. input options not indicated here)
@@ -123,6 +124,18 @@ def test_AHHY_all_static_residues():
 
     assert len(rigid_part) == 3555
     assert len(movable_part) == 0
+
+
+def test_ser_unordered():
+    f = open(ser_unordered, "r")
+    pdb_string = f.read()
+    polymer = Polymer.from_pdb_string(
+        pdb_string,
+        chem_templates,
+        mk_prep,
+    )
+    assert polymer.monomers["A:201"].residue_template_key == "SER"
+
 
 def test_AHHY_flex_residues():
     f = open(ahhy_example, "r")
